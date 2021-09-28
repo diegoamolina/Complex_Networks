@@ -1,46 +1,46 @@
-//FUNCION CALCULADORA DE distanceS
-//Los nodes inicial y final deben estar en la red o se ejecuta indefinidamente
 
-//Distance Calculator 
+//DISTANCE CALCULATOR
 //Input: network, node 1, node 2 (both nodes must be in network, or the function never ends)
 //Output: Distance between node 1 and node 2
 
 int distance(int **IN,int initial_node, int final_node, int N)
 {
     //Definitions:
-    int i,j,distance, node, degree, neighbour,next_neighborhood_size ,inspector,path_length;  //Integers
-    int ring_node,length_ring,next_length_ring;    //Integers
-    bool must_continue, unknown;             //Booleans
-    int *path,*ring, *next_ring;   //Integers Pointers
+    int i,j,distance, node, degree, neighbour;          //Integers
+    int next_neighborhood_size ,inspector,path_length;  
+    int ring_node,length_ring,next_length_ring;         
+
+    bool must_continue, unknown;                        //Booleans
+    int *path,*ring, *next_ring;                        //Integers Pointers
 
     //Initialize
     must_continue = unknown = true;
     distance = 0;
 
 
-    //First Neighborhood loop:
+    //First neighborhood loop:
 
     if(initial_node != final_node)      //Are both nodes the same?
     {
         distance++;
 
-        node = initial_node - 1;        //chosen node
-        degree = IN[node][0];     //degree
+        node = initial_node - 1;        //Chosen node
+        degree = IN[node][0];           //Degree
 
-        path = malloc( sizeof(int*) );    //allocate memory to save node
-        path[0] = node;       //save node
-        path_length = 1;        //save path size
+        path = malloc( sizeof(int*) );      //Allocate memory to save node
+        path[0] = node;                     //Save node
+        path_length = 1;                    //Save path size
 
-        ring = malloc( degree * sizeof(int*) );     //allocate memory. it´s just temporary
+        ring = malloc( degree * sizeof(int*) );         //Allocate memory. it´s just temporary
         next_ring = malloc( degree * sizeof(int*) );
-        length_ring = next_length_ring = degree;       //save size of next ring length guardo el tama�o del pr�ximo vecindario
+        length_ring = next_length_ring = degree;        //Save size of next ring
 
 
         for(neighbour = 1;neighbour <= degree;neighbour++ )
         {
             if(IN[node][neighbour] == final_node)
             {
-                //pongo condiciones para terminar programa
+                //Condition to finish program
                 must_continue = false;
                 neighbour = degree + 1;
             }
@@ -51,15 +51,15 @@ int distance(int **IN,int initial_node, int final_node, int N)
             }
         }
 
-        //BUCLE PARA EL VECINDARIO N-ESIMO:
+        //UMPTEENTH NEIGHBORHOOD LOOP:
 
         while(must_continue)
         {
             distance++;
 
-            //actualizo el anillo a recorrer:
+            //Upgrade ring to inspect:
 
-            //guardo nodes del anillo viejo en path:
+            //Save nodes from old ring in path:
 
             path = realloc(path,(path_length + length_ring) * sizeof(int));
 
@@ -68,34 +68,33 @@ int distance(int **IN,int initial_node, int final_node, int N)
                 path[path_length + ring_node] = ring[ring_node];
             }
 
-
             path_length = path_length + length_ring;
 
-            //reinicio anillo viejo:
+            //Reset old ring:
             free(ring);
             ring = malloc((next_length_ring) * sizeof(int*));
 
-            //convierto next_ring en anillo:
+            //Turn next ring into ring 
             for(ring_node=0;ring_node<next_length_ring;ring_node++)
             {
                 ring[ring_node] = next_ring[ring_node];
             }
             length_ring = next_length_ring;
 
-            //reinicio next_ring
+            //Reset next ring:
             next_length_ring = 0;
             free(next_ring);
             next_ring = malloc( sizeof(int*));
 
-            //RECORRO EL ANILLO
+            //INSPECT THE RING:
             for(ring_node=0;ring_node<length_ring;ring_node++)
             {
 
                 node = ring[ring_node]-1;
                 degree = IN[node][0];
-                for(neighbour = 1; neighbour <= degree; neighbour ++)   //recorro los neighbours de node
+                for(neighbour = 1; neighbour <= degree; neighbour ++)   //inspect neighbours of node
                 {
-                    //Reviso si ya pas� antes por node:
+                    //Is node already in path?
                     unknown = true;
                     for(inspector = 0; inspector < path_length; inspector++)
                     {
@@ -106,9 +105,9 @@ int distance(int **IN,int initial_node, int final_node, int N)
                         }
                     }
 
-                    if(unknown)     //Si node no est� en path:
+                    if(unknown)     //When node is unknown:
                     {
-                        if(IN[node][neighbour] == final_node)      //verifico si es el node que busco
+                        if(IN[node][neighbour] == final_node)      //Is this node the searched node? 
                         {
                             //Pongo condiciones para terminar programa
                             inspector = path_length;
@@ -118,8 +117,7 @@ int distance(int **IN,int initial_node, int final_node, int N)
                         }
                         else
                         {
-                            //Agrego este neighbour de node al pr�ximo anillo:
-
+                            //Add this node´s neighbour to next ring:
                             next_ring = realloc(next_ring,(next_length_ring + 1) * sizeof(int));
                             next_ring[next_length_ring] = IN[node][neighbour];
                             next_length_ring++;
@@ -135,43 +133,43 @@ int distance(int **IN,int initial_node, int final_node, int N)
         must_continue = false;
     }
 
-    //Mensaje de error cuando los nodes no est�n conectados:
+    //Warning message when nodes are not linked:
     if(must_continue)
     {
-        printf("Advertencia: Los nodes no est�n conectados");
+        printf("Warning: The nodes are not linked");
         distance = -10;
     }
-
 
     return distance;
 }
 
-bool distance_igual_uno(int **IN,int initial_node, int final_node)
+//FUNCTION TO NOW IF TWO NODES ARE NEIGHBOURS
+bool distance_equal_one(int **IN, int initial_node, int final_node)
 {
-    //Definiciones:
-    int node, degree, neighbour;  //Enteros
-    bool distance;             //Booleanos
+    //Definitions:
+    int node, degree, neighbour;    //Integers
+    bool are_neighbours;                  //Booleans
 
-    //Inicializar
-    distance = false;
+    //Initialize
+    are_neighbours = false;
 
-    //BUCLE PARA EL PRIMER VECINDARIO:
+    //First neighborhood loop:
 
-    if(initial_node != final_node)      //verifico si son el mismo node
+    if(initial_node != final_node)      //Are both nodes the same?
     {
-        node = initial_node - 1;        //node a recorrer
-        degree = IN[node][0];     //vecindario
+        node = initial_node - 1;        //node to check
+        degree = IN[node][0];           //degree
 
         for(neighbour = 1;neighbour <= degree;neighbour++ )
         {
             if(IN[node][neighbour] == final_node)
             {
-                //pongo condiciones para terminar programa
-                distance = true;
+                //Condition to finish program
+                are_neighbours = true;
                 neighbour = degree + 1;
             }
         }
 
     }
-    return distance;
+    return are_neighbours;
 }
