@@ -1,6 +1,16 @@
-    //Test Network 1
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
 
-    network = malloc( 10 * sizeof(int*) );
+#include "Test Network 1.cpp"
+#include "Functions.cpp"
+
+int main (void)
+{
+    
+    int **network;
+    
+    network = (int**) malloc( 10 * sizeof(int*) );
     network[0] = (int*) malloc( 3 * sizeof(int) );  //node 1
     network[1] = (int*) malloc( 2 * sizeof(int) );  //node 2
     network[2] = (int*) malloc( 3 * sizeof(int) );  //node 3
@@ -51,3 +61,24 @@
     network[9][0] = 1;  //degree
     network[9][1] = 9;
 
+
+    //initialize(network);
+    //printf("%d", network[0][0]);
+    
+    
+    int first_node, second_node, final_distance;
+
+    printf("Insert one node of network\n");
+    scanf("%d",&first_node);
+
+    printf("Insert other node of network\n");
+    scanf("%d", &second_node);
+
+    final_distance = distance(network, first_node, second_node);
+    printf("The distance between node %d and node %d is %d\n", first_node, second_node, final_distance);
+    
+
+   free(network);
+   
+    return 0;
+}

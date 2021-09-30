@@ -3,7 +3,7 @@
 //Input: network, node 1, node 2 (both nodes must be in network, or the function never ends)
 //Output: Distance between node 1 and node 2
 
-int distance(int **IN,int initial_node, int final_node, int N)
+int distance(int **IN,int initial_node, int final_node)
 {
     //Definitions:
     int i,j,distance, node, degree, neighbour;          //Integers
@@ -27,12 +27,12 @@ int distance(int **IN,int initial_node, int final_node, int N)
         node = initial_node - 1;        //Chosen node
         degree = IN[node][0];           //Degree
 
-        path = malloc( sizeof(int*) );      //Allocate memory to save node
+        path = (int*) malloc( sizeof(int*) );      //Allocate memory to save node
         path[0] = node;                     //Save node
         path_length = 1;                    //Save path size
 
-        ring = malloc( degree * sizeof(int*) );         //Allocate memory. it´s just temporary
-        next_ring = malloc( degree * sizeof(int*) );
+        ring = (int*) malloc( degree * sizeof(int*) );         //Allocate memory. it´s just temporary
+        next_ring = (int*) malloc( degree * sizeof(int*) );
         length_ring = next_length_ring = degree;        //Save size of next ring
 
 
@@ -61,7 +61,7 @@ int distance(int **IN,int initial_node, int final_node, int N)
 
             //Save nodes from old ring in path:
 
-            path = realloc(path,(path_length + length_ring) * sizeof(int));
+            path = (int*) realloc(path,(path_length + length_ring) * sizeof(int));
 
             for(ring_node=0;ring_node < length_ring;ring_node++)
             {
@@ -72,7 +72,7 @@ int distance(int **IN,int initial_node, int final_node, int N)
 
             //Reset old ring:
             free(ring);
-            ring = malloc((next_length_ring) * sizeof(int*));
+            ring = (int*) malloc((next_length_ring) * sizeof(int*));
 
             //Turn next ring into ring 
             for(ring_node=0;ring_node<next_length_ring;ring_node++)
@@ -84,7 +84,7 @@ int distance(int **IN,int initial_node, int final_node, int N)
             //Reset next ring:
             next_length_ring = 0;
             free(next_ring);
-            next_ring = malloc( sizeof(int*));
+            next_ring = (int*) malloc( sizeof(int*));
 
             //INSPECT THE RING:
             for(ring_node=0;ring_node<length_ring;ring_node++)
@@ -118,7 +118,7 @@ int distance(int **IN,int initial_node, int final_node, int N)
                         else
                         {
                             //Add this node´s neighbour to next ring:
-                            next_ring = realloc(next_ring,(next_length_ring + 1) * sizeof(int));
+                            next_ring = (int*) realloc(next_ring,(next_length_ring + 1) * sizeof(int));
                             next_ring[next_length_ring] = IN[node][neighbour];
                             next_length_ring++;
                         }
@@ -139,6 +139,10 @@ int distance(int **IN,int initial_node, int final_node, int N)
         printf("Warning: The nodes are not linked");
         distance = -10;
     }
+
+    free(path);
+    free(ring);
+    free(next_ring);
 
     return distance;
 }
