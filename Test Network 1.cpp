@@ -4,9 +4,11 @@
     //Test Network 1
 
     //int **network;
-    int initialize(int **network)
+
+    /*
+    int build_10_nodes_network(int **network)
     {
-    network    = (int**) malloc( 10 * sizeof(int*) );
+    //network    = (int**) malloc( 10 * sizeof(int*) );
     network[0] = (int*) malloc( 3 * sizeof(int) );  //node 1
     network[1] = (int*) malloc( 2 * sizeof(int) );  //node 2
     network[2] = (int*) malloc( 3 * sizeof(int) );  //node 3
@@ -59,3 +61,5 @@
 
     return 0;
     }
+
+    */

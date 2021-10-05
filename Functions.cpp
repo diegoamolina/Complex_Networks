@@ -3,7 +3,7 @@
 //Input: network, node 1, node 2 (both nodes must be in network, or the function never ends)
 //Output: Distance between node 1 and node 2
 
-int distance(int **IN,int initial_node, int final_node)
+int distance(int **network,int initial_node, int final_node)
 {
     //Definitions:
     int i,j,distance, node, degree, neighbour;          //Integers
@@ -25,7 +25,7 @@ int distance(int **IN,int initial_node, int final_node)
         distance++;
 
         node = initial_node - 1;        //Chosen node
-        degree = IN[node][0];           //Degree
+        degree = network[node][0];           //Degree
 
         path = (int*) malloc( sizeof(int*) );      //Allocate memory to save node
         path[0] = node;                     //Save node
@@ -38,7 +38,7 @@ int distance(int **IN,int initial_node, int final_node)
 
         for(neighbour = 1;neighbour <= degree;neighbour++ )
         {
-            if(IN[node][neighbour] == final_node)
+            if(network[node][neighbour] == final_node)
             {
                 //Condition to finish program
                 must_continue = false;
@@ -46,8 +46,8 @@ int distance(int **IN,int initial_node, int final_node)
             }
             else
             {
-                ring[neighbour - 1] = IN[node][neighbour];
-                next_ring[neighbour - 1] = IN[node][neighbour];
+                ring[neighbour - 1] = network[node][neighbour];
+                next_ring[neighbour - 1] = network[node][neighbour];
             }
         }
 
@@ -91,14 +91,14 @@ int distance(int **IN,int initial_node, int final_node)
             {
 
                 node = ring[ring_node]-1;
-                degree = IN[node][0];
+                degree = network[node][0];
                 for(neighbour = 1; neighbour <= degree; neighbour ++)   //inspect neighbours of node
                 {
                     //Is node already in path?
                     unknown = true;
                     for(inspector = 0; inspector < path_length; inspector++)
                     {
-                        if(path[inspector] == IN[node][neighbour])  //
+                        if(path[inspector] == network[node][neighbour])  //
                         {
                            unknown = false;
                            inspector = path_length;
@@ -107,7 +107,7 @@ int distance(int **IN,int initial_node, int final_node)
 
                     if(unknown)     //When node is unknown:
                     {
-                        if(IN[node][neighbour] == final_node)      //Is this node the searched node? 
+                        if(network[node][neighbour] == final_node)      //Is this node the searched node? 
                         {
                             //Pongo condiciones para terminar programa
                             inspector = path_length;
@@ -119,7 +119,7 @@ int distance(int **IN,int initial_node, int final_node)
                         {
                             //Add this node´s neighbour to next ring:
                             next_ring = (int*) realloc(next_ring,(next_length_ring + 1) * sizeof(int));
-                            next_ring[next_length_ring] = IN[node][neighbour];
+                            next_ring[next_length_ring] = network[node][neighbour];
                             next_length_ring++;
                         }
                     }
@@ -147,8 +147,64 @@ int distance(int **IN,int initial_node, int final_node)
     return distance;
 }
 
+//EXAMPLE NETWORK BUILDER
+void build_10_nodes_network(int **network)
+    {
+    network[0] = (int*) malloc( 3 * sizeof(int) );  //node 1
+    network[1] = (int*) malloc( 2 * sizeof(int) );  //node 2
+    network[2] = (int*) malloc( 3 * sizeof(int) );  //node 3
+    network[3] = (int*) malloc( 3 * sizeof(int) );  //node 4
+    network[4] = (int*) malloc( 4 * sizeof(int) );  //node 5
+    network[5] = (int*) malloc( 3 * sizeof(int) );  //node 6
+    network[6] = (int*) malloc( 2 * sizeof(int) );  //node 7
+    network[7] = (int*) malloc( 3 * sizeof(int) );  //node 8
+    network[8] = (int*) malloc( 3 * sizeof(int) );  //node 9
+    network[9] = (int*) malloc( 2 * sizeof(int) );  //node 10
+
+    //node 1
+    network[0][0] = 2;  //degree
+    network[0][1] = 2;
+    network[0][2] = 3;
+    //node 2
+    network[1][0] = 1;  //degree
+    network[1][1] = 1;
+    //node 3
+    network[2][0] = 2;  //degree
+    network[2][1] = 1;
+    network[2][2] = 4;
+    //node 4
+    network[3][0] = 2;  //degree
+    network[3][1] = 3;
+    network[3][2] = 5;
+    //node 5
+    network[4][0] = 3;  //degree
+    network[4][1] = 4;
+    network[4][2] = 6;
+    network[4][3] = 8;
+    //node 6
+    network[5][0] = 2;  //degree
+    network[5][1] = 5;
+    network[5][2] = 7;
+    //node 7
+    network[6][0] = 1;  //degree
+    network[6][1] = 6;
+    //node 8
+    network[7][0] = 2;  //degree
+    network[7][1] = 5;
+    network[7][2] = 9;
+    //node 9
+    network[8][0] = 2;  //degree
+    network[8][1] = 8;
+    network[8][2] = 10;
+    //node 10
+    network[9][0] = 1;  //degree
+    network[9][1] = 9;
+
+    }
+
+
 //FUNCTION TO NOW IF TWO NODES ARE NEIGHBOURS
-bool distance_equal_one(int **IN, int initial_node, int final_node)
+bool distance_equal_one(int **network, int initial_node, int final_node)
 {
     //Definitions:
     int node, degree, neighbour;    //Integers
@@ -162,11 +218,11 @@ bool distance_equal_one(int **IN, int initial_node, int final_node)
     if(initial_node != final_node)      //Are both nodes the same?
     {
         node = initial_node - 1;        //node to check
-        degree = IN[node][0];           //degree
+        degree = network[node][0];           //degree
 
         for(neighbour = 1;neighbour <= degree;neighbour++ )
         {
-            if(IN[node][neighbour] == final_node)
+            if(network[node][neighbour] == final_node)
             {
                 //Condition to finish program
                 are_neighbours = true;
