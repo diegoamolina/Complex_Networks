@@ -98,7 +98,7 @@ int distance(int **network,int initial_node, int final_node)
                     unknown = true;
                     for(inspector = 0; inspector < path_length; inspector++)
                     {
-                        if(path[inspector] == network[node][neighbour])  //
+                        if(path[inspector] == network[node][neighbour])  //avoid knowned nodes
                         {
                            unknown = false;
                            inspector = path_length;
@@ -109,7 +109,7 @@ int distance(int **network,int initial_node, int final_node)
                     {
                         if(network[node][neighbour] == final_node)      //Is this node the searched node? 
                         {
-                            //Pongo condiciones para terminar programa
+                            //Conditions to finish program
                             inspector = path_length;
                             neighbour = degree + 1;
                             ring_node = length_ring;
