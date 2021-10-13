@@ -51,7 +51,7 @@ int distance(int **network,int initial_node, int final_node)
             }
         }
 
-        //UMPTEENTH NEIGHBORHOOD LOOP:
+        //Umptennth neighborhood loop:
 
         while(must_continue)
         {
